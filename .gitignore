@@ -1,0 +1,5 @@
+.venv/
+files/
+*.xlsx
+__pycache__/
+plots/
