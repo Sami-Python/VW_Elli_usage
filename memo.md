@@ -15,3 +15,7 @@
 - Päivitetty `process_data.py` suodattamaan pois 0 kWh lataukset. Rivien määrä putosi 72 -> 56. Excel ja kuvaajat generoitu uudelleen.
 - Päivitetty `.gitignore` (lisätty `.venv`, `files/`, `*.xlsx`, `plots/`).
 - Korjattu `process_data.py`: aikaleimat tallennetaan nyt tekstimuotoisina (YYYY-MM-DD HH:MM:SS), jotta Power BI ei näytä niitä Excel-sarjanumeroina.
+- Lisätty `process_data.py`:hen erilliset sarakkeet (`Start_Date`, `Start_Time`, `End_Date`, `End_Time`) Power BI:n käytettävyyden parantamiseksi.
+- Palautettu `process_data.py`: poistettu erilliset pvm/klo sarakkeet. Pidettiin vain `Start_Timestamp` ja `End_Timestamp` (string-muotoisina) taulukon lopussa.
+
+

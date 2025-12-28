@@ -98,25 +98,34 @@ def process_pdfs():
     df = df[df["Consumption_kWh"] > 0]
     
     # 7. Siistitään sarakkeet Power BI -ystävälliseen järjestykseen
+    # Valitaan sarakkeet lopulliseen tiedostoon
     final_df = df[[
-        "Start_Timestamp", 
-        "End_Timestamp", 
         "Duration_Minutes", 
         "Consumption_kWh", 
         "Home charger", 
-        "Authentication"
-    ]]
+        "Authentication",
+        "Start_Timestamp", 
+        "End_Timestamp"
+    ]].copy() # Käytetään .copy() jotta vältetään slice-ongelmat
     
     # Lajitellaan aikajärjestykseen
     final_df = final_df.sort_values(by="Start_Timestamp")
+    
+    # Formatoidaan Timestamp-sarakkeet stringeiksi (kuten aiemmin sovittiin)
+    # Varmistetaan että tyyppi on datetime ennen .dt-kutsua
+    final_df["Start_Timestamp"] = pd.to_datetime(final_df["Start_Timestamp"])
+    final_df["End_Timestamp"] = pd.to_datetime(final_df["End_Timestamp"])
+
+    final_df["Start_Timestamp"] = final_df["Start_Timestamp"].dt.strftime('%Y-%m-%d %H:%M:%S')
+    final_df["End_Timestamp"] = final_df["End_Timestamp"].dt.strftime('%Y-%m-%d %H:%M:%S')
 
     # 8. Tallennus Exceliin
     output_filename = "Elli_Latausdata_PowerBI.xlsx"
     
     # Power BI fix: Muunnetaan aikaleimat merkkijonoiksi (String), jotta Power BI ei näytä niitä Excel-sarjanumeroina (esim. 45761.46)
     # Tämä pakottaa Power BI:n tunnistamaan ne päivämäärinä tai tekstinä, jonka se osaa parsia.
-    final_df["Start_Timestamp"] = final_df["Start_Timestamp"].dt.strftime('%Y-%m-%d %H:%M:%S')
-    final_df["End_Timestamp"] = final_df["End_Timestamp"].dt.strftime('%Y-%m-%d %H:%M:%S')
+    # HUOM: Tämä tehtiin jo yllä, joten tässä ei tarvitse tehdä mitään uutta muunnosta.
+    # Varmistetaan vain tallennus.
 
     try:
         final_df.to_excel(output_filename, index=False)
